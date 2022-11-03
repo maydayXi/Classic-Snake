@@ -54,3 +54,11 @@ html, body {
     top: 40px;
     display: none;
 }
+
+#Infos .status img {
+    width: 60px;
+}
+
+.foods {
+    display: none;
+}

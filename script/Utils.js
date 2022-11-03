@@ -49,12 +49,6 @@ class Utils {
     getGridWidth() { return config.Grid.width; }
 
     /**
-     * 取得每秒更新頻率
-     * @returns Number
-     */
-    getFPS() { return config.FPS; }
-
-    /**
      * 取得方向設定
      * @returns Direction array
      */
@@ -69,6 +63,19 @@ class Utils {
      * @see Vector
      */
     getVector(x, y) { return new Vector(x, y); }
+
+    /**
+     * 取得隨機向量
+     * @returns Vector
+     * 
+     * @see Vector
+     */
+    getRandomVector() {
+        return new Vector(
+            this.randomNumber(config.Grid.count),
+            this.randomNumber(config.Grid.count)
+        );
+    }
 
     /**
      * 取得指定向量的位置
@@ -103,6 +110,51 @@ class Utils {
     }
 
     /**
+     * 隨機產生食物
+     * @returns {String} Image DOM id
+     */
+    getRandomFood() {
+        const images = config.FoodImage;
+        const types  = Object.keys(images).map(key => images[key]);
+        const probability = config.FoodProbability;
+
+        return this.#randFood(types, probability);
+    }
+
+    /**
+     * 依不同機率產生隨機食物
+     * @param {Array} types food types
+     * @param {Array} probability food types probability
+     * @returns Food type
+     */
+    #randFood(types, probability) {
+        var array = [];
+        var i, sum = 0;
+
+        for (i = 0; i < probability.length - 1; i++) {
+            sum += (probability[i] / 100.0);
+            array[i] = sum;
+        };
+
+        // [0 ~ 1]
+        var r = Math.random();
+        for(i = 0; i < array.length && r >= array[i]; i++) ;
+
+        return types[i];
+    }
+
+    /**
+     * 依貪食蛇狀態取得圖片來源
+     * @param {String} status snake status
+     * @returns {String} Image src
+     */
+    getFoodImageSrcByStatus(status) {
+        const types = config.FoodType;
+        const _id = Object.keys(types).find(key => types[key] === status);
+        return this.$(config.FoodImage[_id]).src;
+    }
+
+    /**
      * 設定遊戲畫面尺寸
      * @param {View} view 
      * 
@@ -115,6 +167,64 @@ class Utils {
 
         view.canvas.width = gridWidth + gapWidth;
         view.canvas.height = view.canvas.width;
+    }
+
+    /**
+     * 依狀態取得遊戲畫面更新頻率
+     * @param {String} status snake status
+     * @returns {Number} Game FPS
+     * 
+     * 0 => normal
+     * 
+     * 15 => fast
+     * 
+     * -7 => slow
+     */
+    getFPSByStatus(status) { 
+        switch(status) {
+            case 'fast':    return config.FPS.fast;
+            case 'slow':    return config.FPS.slow;
+            default:        return config.FPS.normal;
+        }
+    }
+
+    /**
+     * 依狀態取得遊戲分數
+     * @param {String} status snake status
+     * @returns {Number} score
+     * 
+     * fast => 30
+     * 
+     * slow => 5
+     * 
+     * else => 10
+     */
+    getScoreByStatus(status) {
+        switch(status) {
+            case 'fast':return config.Scores.Gasoline;
+            case 'slow':return config.Scores.Ice;
+            default:    return config.Scores.Apple;
+        }
+    }
+
+    /**
+     * 依狀態取得計時器
+     * @param {String} status snake status
+     * @returns {Number} 計時秒數（毫秒）
+     * 
+     * immortal, fast, slow => 8000ms
+     * 
+     * else => 0ms
+     */
+    getDurationBystaus(status) {
+        switch(status) {
+            case 'immortal':// 無敵
+            case 'fast':    // 加速
+            case 'slow':    // 減速
+                return config.EffectTime * 1000;
+            default:        // 非持續性效果
+                return 0;
+        }
     }
 };
 

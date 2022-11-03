@@ -9,12 +9,25 @@
     <title>Classic Snake</title>
 </head>
 <body>
+    <div class="foods">
+        <img src="./images/bomb.svg"    id="Bomb"       alt="bomb">
+        <img src="./images/apple.svg"   id="Apple"      alt="apple">
+        <img src="./images/gasoline.svg"id="SpeedUp"    alt="speed-up">
+        <img src="./images/ice.svg"     id="SpeedDown"  alt="speed-down">
+        <img src="./images/shield.svg"  id="Shield"     alt="shield" >
+        <img src="./images/reverse.svg" id="Reverse"    alt="reverse" >
+    </div>
+
     <div class="panel" id="Panel">
         <h2 id="Score">Score：0</h2>
         <button id="btnStart">Start Game</button>
     </div>
     <div id="Infos" class="infos">
         <h2 class="score">Score：0</h2>
+        <h3 class="status">
+            <p class="description">狀態：</p>
+            <img src="" alt="">
+        </h3>
     </div>
     <canvas id="Canvas"></canvas>
 

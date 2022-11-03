@@ -6,4 +6,3 @@ const game = new Game();
 // 鍵盤事件註冊
 const keyDown = e => game.keyDown(e.key);
 window.addEventListener('keydown', keyDown);
-

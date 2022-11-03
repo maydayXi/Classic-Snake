@@ -10,7 +10,13 @@ class Snake {
         this.head = new Vector(0, 0);
         this.speed = new Vector(1, 0);
         this.direction = 'Right';
+        this.status = 'normal';
     }
+
+    /**
+     * 增加長度
+     */
+    addBody() { this.length++; }
 
     update() {
         if(this.body.length > this.length) 
@@ -85,15 +91,50 @@ class Snake {
      * 是否碰撞身體
      * @returns True/False
      */
-    isTouchBody() {
+    isTouchBody(food) {
         let result = false;
 
+        if (food)
+            if(this.head.isEqual(food))
+                return this.head.isEqual(food);
+
         this.body.forEach(_body => {
-            if(this.head.isEqual(_body))
-                result = this.head.isEqual(_body);
+            if(food) {
+                if(food.isEqual(_body)) {
+                    result = food.isEqual(_body);
+                }
+            } else {
+                if(this.head.isEqual(_body)) {
+                    result = this.head.isEqual(_body);
+                }
+            }
         });
 
         return result;
+    }
+
+    /**
+     * 依食物種類更新狀態
+     * 
+     * @param {String} food food type(DOM id)
+     * 
+     * @see config.js
+     */
+    updateStatusByFood(food) {
+        switch(food) {
+            case 'SpeedDown':
+                this.status = 'slow';
+                break;
+            case 'SpeedUp':
+                this.status = 'fast';
+                break;
+            case 'Shield':
+                this.status = 'shield';
+                break;
+            case 'Star':
+                this.status = 'immortal';
+                break;
+        }
     }
 };
 

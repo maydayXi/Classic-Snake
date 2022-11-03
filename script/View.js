@@ -8,19 +8,30 @@ import Vector from "./Vector.js";
 class View {
     /**
      * 頁面初始設定
-     * @param {Object} config Game data config
      */
     constructor() {
         // 共用方法物件
         this.utils       = new Utils();
 
         // 頁面元件
-        this.startButton = this.utils.$("btnStart");
-        this.canvas      = this.utils.$('Canvas');
+        this.startButton = this.utils.$("btnStart");    // 開始按鈕
+        this.canvas      = this.utils.$('Canvas');      // 畫布
         this.ctx         = this.canvas.getContext('2d');
-        this.panel       = this.utils.$('Panel');
-        this.infos       = this.utils.$('Infos');
-        this.score       = this.infos.children[0];
+        this.panel       = this.utils.$('Panel');       // 開始畫面
+        this.infos       = this.utils.$('Infos');       // 遊戲資訊
+        this.score       = this.infos.children[0];      // 遊戲分數
+        this.status      = this.infos.children[1];      // 蛇的狀態
+        this.statusDesc  = this.status.getElementsByTagName('p')[0];
+        this.statusImg   = this.status.getElementsByTagName('img')[0];
+    }
+
+    #foodTest() {
+        const food = this.utils.$('SpeedUp');
+        const vector = this.utils.getVector(20, 20);
+        const {x, y} = this.utils.getPositionByVector(vector);
+        const width = this.utils.getGridWidth();
+
+        this.ctx.drawImage(food, x, y, width, width);
     }
 
     /**
@@ -41,9 +52,9 @@ class View {
                     this.utils.getVector(i, j), 
                     this.utils.getColor('block')
                 );
-
+        
         // 初始食物
-        this.#renderFoods(foods);
+        this.renderFoods(foods);
     }
 
     /**
@@ -53,12 +64,20 @@ class View {
      * 
      * @see Vector
      */
-    #renderBlock(vector, color) {
+    #renderBlock(vector, type) {
         const {x, y} = this.utils.getPositionByVector(vector);
         let width = this.utils.getGridWidth();
 
-        this.ctx.fillStyle = color;
-        this.ctx.fillRect(x, y, width, width);
+        // 純色
+        if(type.startsWith('rgb')) {
+            this.ctx.fillStyle = type;
+            this.ctx.fillRect(x, y, width, width);
+        }
+        // 食物
+        else {
+            const foodImage = this.utils.$(type);
+            this.ctx.drawImage(foodImage, x, y, width, width);
+        }
     }
 
     /**
@@ -76,8 +95,8 @@ class View {
      * 渲染食物
      * @param {Array} foods food array
      */
-    #renderFoods(foods) {
-        foods.forEach(food => this.#renderBlock(food, this.utils.getColor('food')));
+    renderFoods(foods) {
+        foods.forEach(food => this.#renderBlock(food.vector, food.type));
     }
 
     /**
@@ -92,26 +111,17 @@ class View {
         this.#renderSanke(game.snake);
 
         this.timer = setTimeout(() => this.updatePlayground(game), 
-            this.utils.getUpdatePerSecond(this.utils.getFPS()));
+            this.utils.getUpdatePerSecond(game.FPS));
 
         game.play();
     }
 
+    /**
+     * 停止更新遊戲畫面
+     */
     stopUpdatePlayground() {
         clearTimeout(this.timer);
         this.timer = -1;
-    }
-
-    /**
-     * 新增食物
-     * @param {Game} game 遊戲主體
-     * 
-     * @see Game
-     */
-    addFood(game) {      
-        // 新增食物
-        game.addFood();
-        this.#renderFoods(game.foods);
     }
 
     /**
@@ -139,6 +149,27 @@ class View {
      * @param {Number} score game score
      */
     showScore(score) { this.score.innerHTML = `Score：${score}`; }
+
+    /**
+     * 顯示貪食蛇的狀態
+     * @param {String} status snake status
+     */
+    showStatus(status) {
+        console.log(`view show status：${status}`);
+        
+        if(!status) {
+            console.log(`don't have status`);
+            
+            this.statusDesc.innerHTML = '狀態：';
+            this.statusImg.src = '';
+        } else {
+            if(status !== 'normal') {
+                this.statusDesc.innerHTML = `狀態：${status}`;
+                let src = this.utils.getFoodImageSrcByStatus(status);
+                this.statusImg.src = src;
+            }
+        }
+    }
 
     /**
      * 顯示遊戲總分
