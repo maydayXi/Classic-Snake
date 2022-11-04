@@ -22,13 +22,8 @@ class Game {
 
         // 渲染遊戲畫面
         this.view.renderPlayground(this.foods);
-        // 開始鈕事件
-        this.#bindingStartEvent();
-    }
-
-    #bindingStartEvent() {
-        this.view.startButton.addEventListener(
-            'click', this.utils.binding(this.startGame, this));
+        // 按鈕事件
+        this.view.bindingClickEvent(this);
     }
 
     /**
@@ -151,7 +146,6 @@ class Game {
      * @param {Object} food food object
      */
     #eat(food) {
-        const effects = ['SpeedUp', 'SpeedDown'];
         const ateFood = this.foods.find(_food => _food.vector.isEqual(food));
         this.foods = this.foods.filter(_food => !_food.vector.isEqual(food));
 
@@ -159,6 +153,7 @@ class Game {
         if(ateFood.type === 'Apple') this.#eatApple();
         // 吃到炸彈：扣 50 分
         if(ateFood.type === 'Bomb') this.#eatBomb();
+
 
         // 更新狀態
         this.snake.updateStatusByFood(ateFood.type);
@@ -168,11 +163,10 @@ class Game {
         const _fps = this.utils.getFPSByStatus(this.snake.status);
         
         // 吃到加速或減速
-        if(effects.includes(ateFood.type)) {
+        if(['SpeedUp', 'SpeedDown'].includes(ateFood.type)) {
             // 清除上一個效果狀態
             this.#clearEffect();
-            if(this.FPS + _fps > 0) 
-                this.FPS += _fps;
+            if(this.FPS + _fps > 0) this.FPS += _fps;
         }
 
         // 變更效果時間

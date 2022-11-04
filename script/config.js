@@ -10,7 +10,7 @@ var config = {
         gap:    2,  // 格子間隔
         count:  40, // 格子數
     },
-    // 食物出現的機率：Apple(80%), Gasoline(5%), Ice(5%), Shield(5%), Bomb(5%)
+    // 食物出現的機率：Apple(60%), Gasoline(10%), Ice(10%), Shield(10%), Bomb(10%)
     FoodProbability: [60, 10, 10, 10, 10],
     // 食物圖片(ID 屬性)
     FoodImage: {
@@ -24,7 +24,7 @@ var config = {
     FoodType: {
         // 一次性效果
         Reverse:    'reverse',  // 反轉方向
-        Bomb:       'bomb',     // 炸彈：-50 分，如果 0 吃到直接 Game over。
+        Bomb:       'bomb',     // 炸彈：-50 分，如果分數 < 50，吃到直接 Game over。
         Shield:     'shield',   // 盾牌：與炸彈抵銷一次
         Apple:      'normal',   // 蘋果：+10 分
         
@@ -35,7 +35,7 @@ var config = {
     },
     // 分數
     Scores: {
-        Gasoline:   30,
+        Gasoline:   20,
         Ice:        5,
         Star:       0,
         Reverse:    0,

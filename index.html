@@ -9,6 +9,7 @@
     <title>Classic Snake</title>
 </head>
 <body>
+
     <div class="foods">
         <img src="./images/bomb.svg"    id="Bomb"       alt="bomb">
         <img src="./images/apple.svg"   id="Apple"      alt="apple">
@@ -21,6 +22,7 @@
     <div class="panel" id="Panel">
         <h2 id="Score">Score：0</h2>
         <button id="btnStart">Start Game</button>
+        <button id="btnHelp">Help</button>
     </div>
     <div id="Infos" class="infos">
         <h2 class="score">Score：0</h2>
@@ -31,6 +33,8 @@
     </div>
     <canvas id="Canvas"></canvas>
 
+    <!-- Sweetalert -->
+    <script src="./script/plugin/sweetalert2.all.min.js"></script>
     <script src="./script/index.js" type="module"></script>
 </body>
 </html>

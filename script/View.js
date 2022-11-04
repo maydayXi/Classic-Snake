@@ -1,5 +1,6 @@
 import Utils from "./Utils.js";
 import Vector from "./Vector.js";
+import template from "./template.js";
 
 /**
  * View class
@@ -14,7 +15,8 @@ class View {
         this.utils       = new Utils();
 
         // 頁面元件
-        this.startButton = this.utils.$("btnStart");    // 開始按鈕
+        this.startButton = this.utils.$('btnStart');    // 開始按鈕
+        this.helpButton  = this.utils.$('btnHelp');     // 說明按鈕
         this.canvas      = this.utils.$('Canvas');      // 畫布
         this.ctx         = this.canvas.getContext('2d');
         this.panel       = this.utils.$('Panel');       // 開始畫面
@@ -23,6 +25,20 @@ class View {
         this.status      = this.infos.children[1];      // 蛇的狀態
         this.statusDesc  = this.status.getElementsByTagName('p')[0];
         this.statusImg   = this.status.getElementsByTagName('img')[0];
+    }
+
+    /**
+     * 按鈕事件
+     * @param {Game} game game instance
+     * 
+     * @see Game
+     */
+    bindingClickEvent(game) {
+        const e = 'click'
+        this.startButton.addEventListener(e, 
+            this.utils.binding(game.startGame, game));
+        this.helpButton.addEventListener(e, 
+            this.utils.binding(this.showHelp, this));
     }
 
     #foodTest() {
@@ -155,11 +171,7 @@ class View {
      * @param {String} status snake status
      */
     showStatus(status) {
-        console.log(`view show status：${status}`);
-        
         if(!status) {
-            console.log(`don't have status`);
-            
             this.statusDesc.innerHTML = '狀態：';
             this.statusImg.src = '';
         } else {
@@ -176,6 +188,17 @@ class View {
      * @param {Number} score game total score
      */
     showTotal(score) { this.utils.$('Score').innerHTML = `Total：${score}`; }
+
+    /**
+     * 顯示說明
+     */
+    showHelp() {
+        Swal.fire({
+            icon: 'info',
+            html: template,
+            confirmButtonText: '確定',
+        });
+    }
 }
 
 export default View;
